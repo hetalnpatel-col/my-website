@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>EC Attendance — Offline</title>
+<style>
+:root{--primary:#4f46e5;--success:#10b981;--danger:#ef4444;--bg:#f1f5f9;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.screen{display:none;padding:16px;max-width:500px;margin:0 auto}
+.screen.active{display:block}
+.header{background:var(--primary);color:#fff;padding:16px;text-align:center;border-radius:0 0 20px 20px;margin:-16px -16px 20px}
+.header h1{font-size:1.2rem}
+.header p{font-size:0.8rem;opacity:.8;margin-top:4px}
+.card{background:var(--card);border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.card h2{font-size:1rem;margin-bottom:14px;color:var(--primary)}
+input,select,textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.95rem;margin-bottom:10px;background:var(--bg);color:var(--text);outline:none}
+input:focus,select:focus{border-color:var(--primary)}
+button{width:100%;padding:12px;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:.2s;margin-bottom:8px}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-outline{background:transparent;color:var(--primary);border:2px solid var(--primary)}
+.alert{padding:12px 16px;border-radius:8px;font-size:.88rem;margin-bottom:12px}
+.alert-info{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+.alert-success{background:#d1fae5;color:#065f46}
+.alert-danger{background:#fee2e2;color:#991b1b}
+.alert-warning{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+.code-box{background:var(--primary);color:#fff;text-align:center;border-radius:14px;padding:24px;margin-bottom:16px}
+.code-box .code{font-size:3rem;font-weight:800;letter-spacing:10px}
+.code-box .timer{font-size:.85rem;opacity:.8;margin-top:8px}
+.timer-bar{background:rgba(255,255,255,.3);border-radius:4px;height:6px;margin-top:10px;overflow:hidden}
+.timer-fill{background:#fff;height:100%;transition:width 1s linear}
+.student-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.student-row:last-child{border-bottom:none}
+.student-info .name{font-weight:600;font-size:.9rem}
+.student-info .enroll{font-size:.75rem;color:var(--muted)}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+.badge-green{background:#d1fae5;color:#065f46}
+.badge-red{background:#fee2e2;color:#991b1b}
+.tab-bar{display:flex;background:var(--card);border-radius:12px;padding:4px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.tab{flex:1;text-align:center;padding:9px;border-radius:9px;font-size:.82rem;font-weight:600;cursor:pointer;color:var(--muted)}
+.tab.active{background:var(--primary);color:#fff}
+.empty{text-align:center;color:var(--muted);font-size:.88rem;padding:20px 0}
+.stat{background:#f8fafc;border-radius:8px;padding:12px;text-align:center;flex:1}
+.stat .val{font-size:1.5rem;font-weight:700;color:var(--primary)}
+.stat .lbl{font-size:.75rem;color:var(--muted);margin-top:2px}
+.stats-row{display:flex;gap:10px;margin-bottom:12px}
+.header-wrap{position:relative}
+.logout-btn{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.2);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:.8rem;cursor:pointer;width:auto;margin:0}
+.qr-area{background:#fff;border:2px dashed var(--border);border-radius:12px;padding:20px;text-align:center;margin:10px 0}
+.big-code{font-size:2.5rem;font-weight:800;letter-spacing:8px;color:var(--primary);font-family:monospace}
+.countdown{font-size:1rem;color:var(--muted);margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f1f5f9;padding:8px 10px;text-align:left;font-size:.75rem;color:var(--muted);text-transform:uppercase}
+td{padding:8px 10px;border-bottom:1px solid var(--border);font-size:.85rem}
+.pin-input{font-size:2rem;text-align:center;letter-spacing:8px;font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- TEACHER PIN SETUP -->
+<div class="screen active" id="setupScreen">
+  <div class="header">
+    <h1>📋 EC Attendance</h1>
+    <p>B.Tech EC | Simple & Secure | No Server</p>
+  </div>
+  <div class="alert alert-info">
+    This app works <strong>100% offline</strong>. No server, no fake accounts, no data leaks. All data stays on your device.
+  </div>
+  <div class="card">
+    <h2>🔐 Set Teacher PIN</h2>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:12px">Create a 4-digit PIN to access teacher controls. Students cannot access teacher features without this PIN.</p>
+    <input class="pin-input" id="newPin" type="password" maxlength="4" placeholder="New PIN" inputmode="numeric"/>
+    <input class="pin-input" id="confirmPin" type="password" maxlength="4" placeholder="Confirm PIN" inputmode="numeric"/>
+    <div id="setupMsg"></div>
+    <button class="btn-primary" id="setPinBtn">Set PIN & Continue →</button>
+  </div>
+  <div class="card">
+    <h2>📋 Load Student List</h2>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:10px">Paste enrollment numbers (one per line). These are the ONLY students who can mark attendance.</p>
+    <textarea id="studentList" rows="6" placeholder="12402060601002&#10;12402060601003&#10;12402060601004&#10;..."></textarea>
+    <button class="btn-success" id="loadStudentsBtn">✅ Save Student List</button>
+    <div id="listMsg"></div>
+  </div>
+</div>
+
+<!-- ROLE SELECT -->
+<div class="screen" id="roleScreen">
+  <div class="header">
+    <h1>📋 EC Attendance</h1>
+    <p>B.Tech EC Branch</p>
+  </div>
+  <div class="card" style="margin-top:30px">
+    <h2 style="text-align:center;margin-bottom:20px">Who are you?</h2>
+    <button class="btn-primary" id="goTeacherBtn">👩‍🏫 Teacher</button>
+    <button class="btn-outline" id="goStudentBtn">🎓 Student</button>
+  </div>
+  <div class="alert alert-warning" style="margin-top:8px">
+    <strong>Anti-Proxy:</strong> Code changes every 20 seconds. Must be physically present in class to see it on the board.
+  </div>
+</div>
+
+<!-- TEACHER PIN -->
+<div class="screen" id="teacherPinScreen">
+  <div class="header">
+    <h1>👩‍🏫 Teacher Login</h1>
+    <p>Enter your PIN</p>
+  </div>
+  <div class="card" style="margin-top:30px">
+    <input class="pin-input" id="pinInput" type="password" maxlength="4" placeholder="Enter PIN" inputmode="numeric"/>
+    <div id="pinMsg"></div>
+    <button class="btn-primary" id="verifyPinBtn">Verify →</button>
+    <button class="btn-outline" id="backRole1Btn">← Back</button>
+  </div>
+</div>
+
+<!-- STUDENT ENROLL CHECK -->
+<div class="screen" id="studentScreen">
+  <div class="header">
+    <h1>🎓 Student</h1>
+    <p>Enter your enrollment number</p>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <div class="alert alert-info">Enter your enrollment number. If not in the class list, you cannot mark attendance.</div>
+    <input id="studentEnroll" placeholder="Enrollment Number e.g. 12402060601002" style="font-size:1rem;text-align:center"/>
+    <input id="studentName" placeholder="Your Full Name"/>
+    <div id="studentMsg"></div>
+    <button class="btn-primary" id="verifyStudentBtn">Verify & Continue →</button>
+    <button class="btn-outline" id="backRole2Btn">← Back</button>
+  </div>
+</div>
+
+<!-- STUDENT MARK ATTENDANCE -->
+<div class="screen" id="markScreen">
+  <div class="header header-wrap">
+    <h1>✅ Mark Attendance</h1>
+    <p id="markStudentName">Student</p>
+    <button class="logout-btn" id="studentLogoutBtn">← Back</button>
+  </div>
+  <div class="card">
+    <div class="alert alert-info" id="sessionStatusMsg">Checking for active session...</div>
+    <input id="enteredCode" class="pin-input" placeholder="Enter Code" maxlength="6" inputmode="numeric" style="font-size:1.8rem"/>
+    <button class="btn-primary" id="markAttBtn">✅ Mark My Attendance</button>
+    <div id="markMsg"></div>
+  </div>
+</div>
+
+<!-- TEACHER DASHBOARD -->
+<div class="screen" id="teacherScreen">
+  <div class="header header-wrap">
+    <h1>👩‍🏫 Teacher Dashboard</h1>
+    <p id="sessionSubjectLabel">No Active Session</p>
+    <button class="logout-btn" id="teacherLogoutBtn">Logout</button>
+  </div>
+  <div class="tab-bar">
+    <div class="tab active" id="tab-session" onclick="switchTeacherTab('session',this)">Session</div>
+    <div class="tab" id="tab-records" onclick="switchTeacherTab('records',this)">Records</div>
+    <div class="tab" id="tab-report" onclick="switchTeacherTab('report',this)">Report</div>
+  </div>
+
+  <!-- SESSION TAB -->
+  <div id="tc-session">
+    <div class="code-box" id="codeBox">
+      <div style="font-size:.9rem;opacity:.8;margin-bottom:8px" id="codeBoxLabel">📡 No Active Session</div>
+      <div class="code" id="liveCode">------</div>
+      <div class="timer" id="codeTimer">Start a session to generate code</div>
+      <div class="timer-bar"><div class="timer-fill" id="timerFill" style="width:100%"></div></div>
+    </div>
+    <div class="card">
+      <h2>Session Control</h2>
+      <input id="subjectInput" placeholder="Subject Name (e.g. Analog Electronics)"/>
+      <input id="dateInput" type="date"/>
+      <button class="btn-success" id="startBtn">▶ Start Session</button>
+      <button class="btn-danger" id="stopBtn" style="display:none">⏹ End Session & Download CSV</button>
+      <div id="sessionMsg"></div>
+    </div>
+    <div class="card" id="presentCard" style="display:none">
+      <h2>✅ Present Today (<span id="presentCount">0</span>)</h2>
+      <div id="presentList"></div>
+    </div>
+  </div>
+
+  <!-- RECORDS TAB -->
+  <div id="tc-records" style="display:none">
+    <div class="card">
+      <div class="stats-row">
+        <div class="stat"><div class="val" id="totalStudents">0</div><div class="lbl">Students</div></div>
+        <div class="stat"><div class="val" id="totalSessions">0</div><div class="lbl">Sessions</div></div>
+        <div class="stat"><div class="val" id="avgAttendance">0%</div><div class="lbl">Avg Attend.</div></div>
+      </div>
+      <button class="btn-primary" id="downloadMasterBtn">⬇️ Download Master Report (CSV)</button>
+      <div id="recordsList" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <!-- REPORT TAB -->
+  <div id="tc-report" style="display:none">
+    <div class="card">
+      <h2>📊 Defaulter Report (&lt;75%)</h2>
+      <label style="font-size:.85rem;color:var(--muted)">Filter by date range:</label>
+      <input id="reportFrom" type="date" style="margin-top:6px"/>
+      <input id="reportTo" type="date"/>
+      <button class="btn-primary" id="genReportBtn">Generate Report</button>
+      <button class="btn-outline" id="downloadReportBtn" style="display:none">⬇️ Download Defaulter CSV</button>
+      <div id="reportOut" style="margin-top:12px"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ─────────────────────────────────────────────────────────────
+let state = {
+  pin: localStorage.getItem('att_pin') || '',
+  students: JSON.parse(localStorage.getItem('att_students') || '[]'),
+  sessions: JSON.parse(localStorage.getItem('att_sessions') || '[]'),
+  currentSession: null,
+  currentStudent: null,
+  codeInterval: null
+};
+
+// ── HELPERS ───────────────────────────────────────────────────────────
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function msg(id,txt,type){ document.getElementById(id).innerHTML=`<div class="alert alert-${type}" style="margin-top:8px">${txt}</div>`; }
+function save(){ localStorage.setItem('att_sessions',JSON.stringify(state.sessions)); }
+
+// ── ROTATING CODE (20 seconds) ────────────────────────────────────────
+function getCode(){
+  let h=Math.floor(Date.now()/20000);
+  h=((h>>16)^h)*0x45d9f3b; h=((h>>16)^h)*0x45d9f3b; h=(h>>16)^h;
+  return String(Math.abs(h)%900000+100000);
+}
+function getPrevCode(){
+  let h=Math.floor((Date.now()-20000)/20000);
+  h=((h>>16)^h)*0x45d9f3b; h=((h>>16)^h)*0x45d9f3b; h=(h>>16)^h;
+  return String(Math.abs(h)%900000+100000);
+}
+function startCodeDisplay(){
+  if(state.codeInterval) clearInterval(state.codeInterval);
+  function upd(){
+    if(!state.currentSession) return;
+    const elapsed=(Date.now()%20000)/1000;
+    const rem=20-Math.floor(elapsed);
+    document.getElementById('liveCode').textContent=getCode();
+    document.getElementById('codeTimer').textContent=`Code changes in ${rem}s`;
+    document.getElementById('timerFill').style.width=((20-elapsed)/20*100)+'%';
+  }
+  upd(); state.codeInterval=setInterval(upd,1000);
+}
+
+// ── SETUP SCREEN ──────────────────────────────────────────────────────
+document.getElementById('setPinBtn').onclick=()=>{
+  const p=document.getElementById('newPin').value;
+  const c=document.getElementById('confirmPin').value;
+  if(p.length!==4||isNaN(p)){ msg('setupMsg','PIN must be 4 digits','danger'); return; }
+  if(p!==c){ msg('setupMsg','PINs do not match','danger'); return; }
+  state.pin=p; localStorage.setItem('att_pin',p);
+  msg('setupMsg','✅ PIN saved!','success');
+};
+
+document.getElementById('loadStudentsBtn').onclick=()=>{
+  const raw=document.getElementById('studentList').value.trim();
+  if(!raw){ msg('listMsg','Paste enrollment numbers first','danger'); return; }
+  const list=raw.split('\n').map(s=>s.trim()).filter(s=>s.length>0);
+  state.students=list; localStorage.setItem('att_students',JSON.stringify(list));
+  msg('listMsg',`✅ ${list.length} students loaded!`,'success');
+};
+
+// Check if already set up
+if(state.pin && state.students.length>0){
+  // Pre-fill today's date
+  document.getElementById('dateInput').value=new Date().toISOString().split('T')[0];
+  show('roleScreen');
+} else {
+  // Pre-fill existing students if any
+  if(state.students.length>0) document.getElementById('studentList').value=state.students.join('\n');
+}
+
+// ── ROLE SELECT ───────────────────────────────────────────────────────
+document.getElementById('goTeacherBtn').onclick=()=>show('teacherPinScreen');
+document.getElementById('goStudentBtn').onclick=()=>show('studentScreen');
+
+// ── TEACHER PIN ───────────────────────────────────────────────────────
+document.getElementById('verifyPinBtn').onclick=()=>{
+  const p=document.getElementById('pinInput').value;
+  if(p!==state.pin){ msg('pinMsg','❌ Wrong PIN','danger'); return; }
+  document.getElementById('pinInput').value='';
+  document.getElementById('dateInput').value=new Date().toISOString().split('T')[0];
+  loadRecords();
+  show('teacherScreen');
+};
+document.getElementById('pinInput').onkeydown=e=>{ if(e.key==='Enter') document.getElementById('verifyPinBtn').click(); };
+document.getElementById('backRole1Btn').onclick=()=>show('roleScreen');
+document.getElementById('teacherLogoutBtn').onclick=()=>{
+  if(state.codeInterval){ clearInterval(state.codeInterval); state.codeInterval=null; }
+  show('roleScreen');
+};
+
+// ── STUDENT VERIFY ────────────────────────────────────────────────────
+document.getElementById('verifyStudentBtn').onclick=()=>{
+  const enroll=document.getElementById('studentEnroll').value.trim();
+  const name=document.getElementById('studentName').value.trim();
+  if(!enroll||!name){ msg('studentMsg','Enter both enrollment number and name','danger'); return; }
+  if(!state.students.includes(enroll)){
+    msg('studentMsg','❌ Enrollment number not found in class list. Contact your teacher.','danger'); return;
+  }
+  // Check if already marked today
+  if(state.currentSession){
+    const already=state.currentSession.present.find(p=>p.enroll===enroll);
+    if(already){ msg('studentMsg','⚠️ You already marked attendance for this session!','warning'); return; }
+  }
+  state.currentStudent={enroll,name};
+  document.getElementById('markStudentName').textContent=`${name} | ${enroll}`;
+  document.getElementById('studentEnroll').value='';
+  document.getElementById('studentName').value='';
+  // Check session status
+  if(state.currentSession){
+    document.getElementById('sessionStatusMsg').textContent=`✅ Active session: ${state.currentSession.subject}. Enter the code shown by your teacher.`;
+    document.getElementById('sessionStatusMsg').className='alert alert-success';
+  } else {
+    document.getElementById('sessionStatusMsg').textContent='⚠️ No active session right now. Wait for your teacher to start.';
+    document.getElementById('sessionStatusMsg').className='alert alert-warning';
+  }
+  show('markScreen');
+};
+document.getElementById('backRole2Btn').onclick=()=>show('roleScreen');
+document.getElementById('studentLogoutBtn').onclick=()=>{ state.currentStudent=null; show('roleScreen'); };
+
+// ── MARK ATTENDANCE ───────────────────────────────────────────────────
+document.getElementById('markAttBtn').onclick=()=>{
+  const entered=document.getElementById('enteredCode').value.trim();
+  if(!state.currentSession){ msg('markMsg','❌ No active session right now.','danger'); return; }
+  if(entered!==getCode()&&entered!==getPrevCode()){ msg('markMsg','❌ Wrong or expired code. Look at the board again.','danger'); return; }
+  const already=state.currentSession.present.find(p=>p.enroll===state.currentStudent.enroll);
+  if(already){ msg('markMsg','⚠️ You already marked attendance!','warning'); return; }
+  const t=new Date();
+  const timeStr=t.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  state.currentSession.present.push({
+    enroll:state.currentStudent.enroll,
+    name:state.currentStudent.name,
+    time:timeStr
+  });
+  save();
+  document.getElementById('presentCount').textContent=state.currentSession.present.length;
+  renderPresent();
+  msg('markMsg',`✅ Attendance marked at ${timeStr}!`,'success');
+  document.getElementById('enteredCode').value='';
+  state.currentStudent=null;
+  setTimeout(()=>show('roleScreen'),2000);
+};
+document.getElementById('enteredCode').onkeydown=e=>{ if(e.key==='Enter') document.getElementById('markAttBtn').click(); };
+
+// ── START SESSION ─────────────────────────────────────────────────────
+document.getElementById('startBtn').onclick=()=>{
+  const subj=document.getElementById('subjectInput').value.trim();
+  const date=document.getElementById('dateInput').value;
+  if(!subj){ msg('sessionMsg','Enter subject name','danger'); return; }
+  if(!date){ msg('sessionMsg','Select date','danger'); return; }
+  state.currentSession={ subject:subj, date, startTime:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}), present:[] };
+  document.getElementById('startBtn').style.display='none';
+  document.getElementById('stopBtn').style.display='block';
+  document.getElementById('presentCard').style.display='block';
+  document.getElementById('codeBoxLabel').textContent=`📡 ${subj}`;
+  document.getElementById('sessionSubjectLabel').textContent=subj;
+  document.getElementById('presentCount').textContent='0';
+  document.getElementById('presentList').innerHTML='<div class="empty">No one marked yet</div>';
+  startCodeDisplay();
+  msg('sessionMsg',`Session started for ${subj}`,'success');
+};
+
+// ── STOP SESSION & DOWNLOAD ───────────────────────────────────────────
+document.getElementById('stopBtn').onclick=()=>{
+  if(!state.currentSession) return;
+  if(state.codeInterval){ clearInterval(state.codeInterval); state.codeInterval=null; }
+  // Build absent list
+  const presentEnrolls=state.currentSession.present.map(p=>p.enroll);
+  const absent=state.students.filter(e=>!presentEnrolls.includes(e));
+  // Save session to history
+  const sess={
+    subject:state.currentSession.subject,
+    date:state.currentSession.date,
+    startTime:state.currentSession.startTime,
+    endTime:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+    present:state.currentSession.present,
+    absent:absent.map(e=>({enroll:e}))
+  };
+  state.sessions.push(sess); save();
+  // Auto-download CSV
+  downloadSessionCSV(sess);
+  // Reset
+  state.currentSession=null;
+  document.getElementById('startBtn').style.display='block';
+  document.getElementById('stopBtn').style.display='none';
+  document.getElementById('liveCode').textContent='------';
+  document.getElementById('codeTimer').textContent='Start a session to generate code';
+  document.getElementById('timerFill').style.width='100%';
+  document.getElementById('codeBoxLabel').textContent='📡 No Active Session';
+  document.getElementById('sessionSubjectLabel').textContent='No Active Session';
+  msg('sessionMsg','✅ Session ended! CSV downloaded automatically.','success');
+  loadRecords();
+};
+
+function downloadSessionCSV(sess){
+  const rows=[['Sr.','Enrollment No.','Name','Subject','Date','Start Time','End Time','Status','Marked At']];
+  let sr=1;
+  for(const p of sess.present){
+    rows.push([sr++,p.enroll,p.name,sess.subject,sess.date,sess.startTime,sess.endTime,'Present',p.time]);
+  }
+  for(const a of sess.absent){
+    rows.push([sr++,a.enroll,'',sess.subject,sess.date,sess.startTime,sess.endTime,'Absent','-']);
+  }
+  downloadCSV(rows,`Attendance_${sess.subject.replace(/ /g,'_')}_${sess.date}.csv`);
+}
+
+// ── RENDER PRESENT LIST ───────────────────────────────────────────────
+function renderPresent(){
+  const el=document.getElementById('presentList');
+  if(!state.currentSession||!state.currentSession.present.length){
+    el.innerHTML='<div class="empty">No one marked yet</div>'; return;
+  }
+  el.innerHTML=state.currentSession.present.map(p=>`
+    <div class="student-row">
+      <div class="student-info"><div class="name">${p.name}</div><div class="enroll">${p.enroll}</div></div>
+      <span class="badge badge-green">✅ ${p.time}</span>
+    </div>`).join('');
+}
+
+// ── TEACHER TABS ──────────────────────────────────────────────────────
+function switchTeacherTab(name,el){
+  ['session','records','report'].forEach(t=>{
+    document.getElementById(`tc-${t}`).style.display='none';
+    document.getElementById(`tab-${t}`).classList.remove('active');
+  });
+  document.getElementById(`tc-${name}`).style.display='block';
+  el.classList.add('active');
+  if(name==='records') loadRecords();
+  if(name==='report') setDefaultDates();
+}
+
+// ── LOAD RECORDS ──────────────────────────────────────────────────────
+function loadRecords(){
+  const total=state.students.length;
+  const sessions=state.sessions.length;
+  document.getElementById('totalStudents').textContent=total;
+  document.getElementById('totalSessions').textContent=sessions;
+  if(!sessions){ document.getElementById('avgAttendance').textContent='0%'; document.getElementById('recordsList').innerHTML='<div class="empty">No sessions yet</div>'; return; }
+  let totalPct=0;
+  const rows=state.students.map(enroll=>{
+    let present=0;
+    for(const s of state.sessions) if(s.present.find(p=>p.enroll===enroll)) present++;
+    const pct=sessions>0?Math.round(present/sessions*100):0;
+    totalPct+=pct;
+    const color=pct>=75?'#10b981':pct>=60?'#f59e0b':'#ef4444';
+    return `<div class="student-row">
+      <div class="student-info"><div class="name">${enroll}</div><div class="enroll">${present}/${sessions} sessions</div></div>
+      <div style="font-weight:700;color:${color}">${pct}%</div>
+    </div>`;
+  });
+  document.getElementById('avgAttendance').textContent=Math.round(totalPct/total)+'%';
+  document.getElementById('recordsList').innerHTML=rows.join('');
+}
+
+// ── MASTER CSV DOWNLOAD ───────────────────────────────────────────────
+document.getElementById('downloadMasterBtn').onclick=()=>{
+  if(!state.sessions.length){ alert('No sessions recorded yet.'); return; }
+  const rows=[['Sr.','Enrollment No.','Subject','Date','Start','End','Status','Marked At']];
+  let sr=1;
+  for(const sess of state.sessions){
+    for(const p of sess.present)
+      rows.push([sr++,p.enroll,sess.subject,sess.date,sess.startTime,sess.endTime,'Present',p.time]);
+    for(const a of sess.absent)
+      rows.push([sr++,a.enroll,sess.subject,sess.date,sess.startTime,sess.endTime,'Absent','-']);
+  }
+  downloadCSV(rows,`Master_Attendance_${new Date().toISOString().split('T')[0]}.csv`);
+};
+
+// ── DEFAULTER REPORT ──────────────────────────────────────────────────
+function setDefaultDates(){
+  const today=new Date();
+  const from=new Date(); from.setDate(today.getDate()-15);
+  document.getElementById('reportFrom').value=from.toISOString().split('T')[0];
+  document.getElementById('reportTo').value=today.toISOString().split('T')[0];
+}
+
+let defaulterData=[];
+document.getElementById('genReportBtn').onclick=()=>{
+  const from=document.getElementById('reportFrom').value;
+  const to=document.getElementById('reportTo').value;
+  if(!from||!to){ alert('Select date range'); return; }
+  const filtered=state.sessions.filter(s=>s.date>=from&&s.date<=to);
+  if(!filtered.length){ document.getElementById('reportOut').innerHTML='<div class="empty">No sessions in selected range</div>'; return; }
+  defaulterData=state.students.map(enroll=>{
+    let present=0;
+    for(const s of filtered) if(s.present.find(p=>p.enroll===enroll)) present++;
+    const pct=Math.round(present/filtered.length*100);
+    return {enroll,present,total:filtered.length,pct};
+  }).filter(s=>s.pct<75).sort((a,b)=>a.pct-b.pct);
+  const el=document.getElementById('reportOut');
+  if(!defaulterData.length){ el.innerHTML='<div class="alert alert-success">🎉 No defaulters! All students above 75%</div>'; document.getElementById('downloadReportBtn').style.display='none'; return; }
+  el.innerHTML=`<p style="font-size:.8rem;color:var(--muted);margin-bottom:8px">${defaulterData.length} defaulters from ${from} to ${to} (${filtered.length} sessions)</p>`+
+    defaulterData.map((s,i)=>`<div class="student-row">
+      <div class="student-info"><div class="name">${s.enroll}</div><div class="enroll">${s.present}/${s.total} present</div></div>
+      <span class="badge badge-red">${s.pct}%</span></div>`).join('');
+  document.getElementById('downloadReportBtn').style.display='block';
+};
+
+document.getElementById('downloadReportBtn').onclick=()=>{
+  const from=document.getElementById('reportFrom').value;
+  const to=document.getElementById('reportTo').value;
+  const rows=[['Sr.','Enrollment No.','Attendance %','Classes Present','Total Classes']];
+  defaulterData.forEach((s,i)=>rows.push([i+1,s.enroll,s.pct+'%',s.present,s.total]));
+  downloadCSV(rows,`Defaulters_${from}_to_${to}.csv`);
+};
+
+// ── CSV UTIL ──────────────────────────────────────────────────────────
+function downloadCSV(rows,filename){
+  const csv=rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click();
+}
+</script>
+</body>
+</html>
