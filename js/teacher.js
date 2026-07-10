@@ -1,133 +1,138 @@
-// Login
+let PIN = "";
+let SECRET = "";
 
-async function login() {
+function login() {
 
-    const pin = document.getElementById("pin").value;
-    const secret = document.getElementById("secret").value;
+    PIN = document.getElementById("pin").value.trim();
+    SECRET = document.getElementById("secret").value.trim();
 
-    const res = await fetch(API_URL,{
+    fetch(API_URL,{
         method:"POST",
         body:JSON.stringify({
             action:"teacherLogin",
-            pin:pin,
-            secret:secret
+            pin:PIN,
+            secret:SECRET
         })
+    })
+    .then(r=>r.json())
+    .then(res=>{
+
+        if(res.success){
+
+            document.getElementById("loginBox").style.display="none";
+            document.getElementById("dashboard").style.display="block";
+
+            loadClasses();
+
+        }else{
+
+            alert(res.message);
+
+        }
+
     });
-
-    const data = await res.json();
-
-    if(!data.success){
-        alert(data.message);
-        return;
-    }
-
-    localStorage.setItem("teacherPin",pin);
-    localStorage.setItem("teacherSecret",secret);
-
-    document.getElementById("loginBox").style.display="none";
-    document.getElementById("dashboard").style.display="block";
-
-    loadClasses();
 
 }
 
+function addClass(){
 
-// Load Classes
-
-async function loadClasses(){
-
-    const res = await fetch(API_URL,{
-        method:"POST",
-        body:JSON.stringify({
-            action:"getClasses"
-        })
-    });
-
-    const data = await res.json();
-
-    let html="";
-
-    data.classes.forEach(c=>{
-
-        html+=`
-        <tr>
-            <td>${c.className}</td>
-            <td>${c.branch}</td>
-            <td>${c.semester}</td>
-            <td>
-                <button onclick="deleteClass('${c.classId}')">
-                Delete
-                </button>
-            </td>
-        </tr>
-        `;
-
-    });
-
-    document.getElementById("classTable").innerHTML=html;
-
-}
-
-
-// Add Class
-
-async function addClass(){
-
-    const pin=localStorage.getItem("teacherPin");
-    const secret=localStorage.getItem("teacherSecret");
-
-    const className=document.getElementById("className").value;
-    const branch=document.getElementById("branch").value;
-    const semester=document.getElementById("semester").value;
-
-    const res=await fetch(API_URL,{
+    fetch(API_URL,{
         method:"POST",
         body:JSON.stringify({
 
             action:"addClass",
-
-            pin:pin,
-            secret:secret,
-
-            className:className,
-            branch:branch,
-            semester:semester
+            pin:PIN,
+            secret:SECRET,
+            className:document.getElementById("className").value,
+            branch:document.getElementById("branch").value,
+            semester:document.getElementById("semester").value
 
         })
+    })
+    .then(r=>r.json())
+    .then(res=>{
+
+        if(res.success){
+
+            alert("Class Added");
+
+            loadClasses();
+
+        }else{
+
+            alert(res.message);
+
+        }
+
     });
-
-    const data=await res.json();
-
-    alert(data.message || "Saved");
-
-    loadClasses();
 
 }
 
+function loadClasses(){
 
-// Delete Class
+    fetch(API_URL,{
+        method:"POST",
+        body:JSON.stringify({
+            action:"getClasses"
+        })
+    })
+    .then(r=>r.json())
+    .then(res=>{
 
-async function deleteClass(id){
+        const table=document.getElementById("classTable");
 
-    if(!confirm("Delete class?")) return;
+        table.innerHTML="";
 
-    const pin=localStorage.getItem("teacherPin");
-    const secret=localStorage.getItem("teacherSecret");
+        res.classes.forEach(c=>{
 
-    await fetch(API_URL,{
+            table.innerHTML+=`
+            <tr>
+                <td>${c.className}</td>
+                <td>${c.branch}</td>
+                <td>${c.semester}</td>
+                <td>
+                    <button onclick="deleteClass('${c.classId}')">
+                    Delete
+                    </button>
+                </td>
+            </tr>
+            `;
+
+        });
+
+    });
+
+}
+
+function deleteClass(id){
+
+    if(!confirm("Delete this class?"))
+        return;
+
+    fetch(API_URL,{
         method:"POST",
         body:JSON.stringify({
 
             action:"deleteClass",
-
-            pin:pin,
-            secret:secret,
-
+            pin:PIN,
+            secret:SECRET,
             classId:id
 
         })
-    });
+    })
+    .then(r=>r.json())
+    .then(res=>{
 
-    loadClasses();
+        if(res.success){
+
+            loadClasses();
+
+        }else{
+
+            alert(res.message);
+
+        }
+
+    });
 
 }
