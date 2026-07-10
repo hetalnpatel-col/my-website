@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AEC Attendance System - Teacher</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>AEC Attendance System</h1>
+
+        <h3>Teacher Login</h3>
+
+        <input
+            type="password"
+            id="pin"
+            placeholder="Teacher PIN">
+
+        <input
+            type="password"
+            id="secret"
+            placeholder="Secret Key">
+
+        <button onclick="teacherLogin()">
+
+            Login
+
+        </button>
+
+        <p id="message"></p>
+
+    </div>
+
+    <div
+        id="dashboard"
+        class="card hidden">
+
+        <h2>Dashboard</h2>
+
+        <p>Login Successful.</p>
+
+        <p>Next we will add Class Management here.</p>
+
+    </div>
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/teacher.js"></script>
+
+</body>
+</html>
