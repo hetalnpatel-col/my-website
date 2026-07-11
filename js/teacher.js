@@ -9,7 +9,7 @@ function login() {
     fetch(API_URL,{
         method:"POST",
         body:JSON.stringify({
-            action:"teacherLogin",
+            action:"login",
             pin:PIN,
             secret:SECRET
         })
