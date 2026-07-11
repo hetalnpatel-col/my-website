@@ -221,16 +221,18 @@ function startAttendance() {
 
         method: "POST",
 
-        body: JSON.stringify({
+        body: JSON.stringify ({
 
-            action: "startSession",
+    action: "startSession",
 
-            classId: currentClassId,
+    pin: PIN,
+    secret: SECRET,
 
-            subject:
-            document.getElementById("subject").value
+    classId: currentClassId,
 
-        })
+    subject: document.getElementById("subject").value
+
+})
 
     })
 
