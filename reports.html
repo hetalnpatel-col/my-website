@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AEC Attendance Reports</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>AEC Attendance Reports</h1>
+
+        <label>Select Class</label>
+
+        <select id="reportClass">
+
+        </select>
+
+        <br><br>
+
+        <button onclick="loadReport()">
+
+            Generate Report
+
+        </button>
+
+        <hr>
+
+        <h3>
+
+            Present :
+            <span id="presentCount">0</span>
+
+            &nbsp;&nbsp;&nbsp;
+
+            Absent :
+            <span id="absentCount">0</span>
+
+        </h3>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Enrollment</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Time</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="reportTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/reports.js"></script>
+
+</body>
+
+</html>
