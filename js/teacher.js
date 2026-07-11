@@ -9,12 +9,16 @@ function login() {
     fetch(API_URL,{
         method:"POST",
         body:JSON.stringify({
-            action:"login",
+
+            action:"teacherLogin",
             pin:PIN,
             secret:SECRET
+
         })
     })
+
     .then(r=>r.json())
+
     .then(res=>{
 
         if(res.success){
@@ -24,7 +28,9 @@ function login() {
 
             loadClasses();
 
-        }else{
+        }
+
+        else{
 
             alert(res.message);
 
@@ -43,13 +49,16 @@ function addClass(){
             action:"addClass",
             pin:PIN,
             secret:SECRET,
+
             className:document.getElementById("className").value,
             branch:document.getElementById("branch").value,
             semester:document.getElementById("semester").value
 
         })
     })
+
     .then(r=>r.json())
+
     .then(res=>{
 
         if(res.success){
@@ -58,7 +67,9 @@ function addClass(){
 
             loadClasses();
 
-        }else{
+        }
+
+        else{
 
             alert(res.message);
 
@@ -73,32 +84,47 @@ function loadClasses(){
     fetch(API_URL,{
         method:"POST",
         body:JSON.stringify({
+
             action:"getClasses"
+
         })
     })
+
     .then(r=>r.json())
+
     .then(res=>{
 
-        const table=document.getElementById("classTable");
-
-        table.innerHTML="";
+        let html="";
 
         res.classes.forEach(c=>{
 
-            table.innerHTML+=`
+            html+=`
+
             <tr>
+
                 <td>${c.className}</td>
+
                 <td>${c.branch}</td>
+
                 <td>${c.semester}</td>
+
                 <td>
+
                     <button onclick="deleteClass('${c.classId}')">
-                    Delete
+
+                        Delete
+
                     </button>
+
                 </td>
+
             </tr>
+
             `;
 
         });
+
+        document.getElementById("classTable").innerHTML=html;
 
     });
 
@@ -114,20 +140,26 @@ function deleteClass(id){
         body:JSON.stringify({
 
             action:"deleteClass",
+
             pin:PIN,
             secret:SECRET,
+
             classId:id
 
         })
     })
+
     .then(r=>r.json())
+
     .then(res=>{
 
         if(res.success){
 
             loadClasses();
 
-        }else{
+        }
+
+        else{
 
             alert(res.message);
 
