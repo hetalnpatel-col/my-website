@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AEC Attendance System - Teacher</title>
+<title>AEC Attendance System - Teacher</title>
 
-    <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css">
 
 </head>
 
@@ -16,41 +16,73 @@
 
 <div class="container">
 
-    <div class="card">
+    <div class="card" id="loginBox">
 
         <h1>AEC Attendance System</h1>
 
         <h3>Teacher Login</h3>
 
         <input
-            type="password"
             id="pin"
+            type="password"
             placeholder="Teacher PIN">
 
         <input
-            type="password"
             id="secret"
+            type="password"
             placeholder="Secret Key">
 
         <button onclick="login()">
-
             Login
-
         </button>
-
-        <p id="message"></p>
 
     </div>
 
     <div
+        class="card"
         id="dashboard"
-        class="card hidden">
+        style="display:none;">
 
-        <h2>Dashboard</h2>
+        <h2>Teacher Dashboard</h2>
 
-        <p>Login Successful.</p>
+        <h3>Add Class</h3>
 
-        <p>Next we will add Class Management here.</p>
+        <input
+            id="className"
+            placeholder="Class Name">
+
+        <input
+            id="branch"
+            placeholder="Branch">
+
+        <input
+            id="semester"
+            placeholder="Semester">
+
+        <button onclick="addClass()">
+            Add Class
+        </button>
+
+        <br><br>
+
+        <table border="1" width="100%">
+
+            <thead>
+
+                <tr>
+
+                    <th>Class</th>
+                    <th>Branch</th>
+                    <th>Semester</th>
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="classTable"></tbody>
+
+        </table>
 
     </div>
 
@@ -60,4 +92,5 @@
 <script src="js/teacher.js"></script>
 
 </body>
+
 </html>
