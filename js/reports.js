@@ -149,3 +149,55 @@ function loadReport() {
     });
 
 }
+/*************************************************
+ EXPORT REPORT TO CSV
+*************************************************/
+
+function downloadCSV() {
+
+    let csv = [];
+
+    csv.push("Enrollment,Name,Status,Present,Total,Percentage,Time");
+
+    const rows = document.querySelectorAll("#reportTable tr");
+
+    rows.forEach(row => {
+
+        const cols = row.querySelectorAll("td");
+
+        let data = [];
+
+        cols.forEach(col => {
+
+            data.push('"' + col.innerText + '"');
+
+        });
+
+        csv.push(data.join(","));
+
+    });
+
+    const blob = new Blob([csv.join("\n")], {
+        type: "text/csv"
+    });
+
+    const link = document.createElement("a");
+
+    link.href = URL.createObjectURL(blob);
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const select = document.getElementById("reportClass");
+
+    const className =
+        select.options[select.selectedIndex].text.replace(/\s+/g, "_");
+
+    link.download = className + "_" + today + ".csv";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+}
