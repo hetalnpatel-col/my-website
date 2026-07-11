@@ -1,36 +1,40 @@
 let PIN = "";
 let SECRET = "";
 
+let currentClassId = "";
+
+/*************************************************
+ LOGIN
+*************************************************/
+
 function login() {
 
     PIN = document.getElementById("pin").value.trim();
     SECRET = document.getElementById("secret").value.trim();
 
-    fetch(API_URL,{
-        method:"POST",
-        body:JSON.stringify({
+    fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
 
-            action:"teacherLogin",
-            pin:PIN,
-            secret:SECRET
+            action: "teacherLogin",
+            pin: PIN,
+            secret: SECRET
 
         })
     })
 
-    .then(r=>r.json())
+    .then(r => r.json())
 
-    .then(res=>{
+    .then(res => {
 
-        if(res.success){
+        if (res.success) {
 
-            document.getElementById("loginBox").style.display="none";
-            document.getElementById("dashboard").style.display="block";
+            document.getElementById("loginBox").style.display = "none";
+            document.getElementById("dashboard").style.display = "block";
 
             loadClasses();
 
-        }
-
-        else{
+        } else {
 
             alert(res.message);
 
@@ -40,65 +44,31 @@ function login() {
 
 }
 
-function addClass(){
+/*************************************************
+ LOAD CLASSES
+*************************************************/
 
-    fetch(API_URL,{
-        method:"POST",
-        body:JSON.stringify({
+function loadClasses() {
 
-            action:"addClass",
-            pin:PIN,
-            secret:SECRET,
+    fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
 
-            className:document.getElementById("className").value,
-            branch:document.getElementById("branch").value,
-            semester:document.getElementById("semester").value
+            action: "getClasses"
 
         })
     })
 
-    .then(r=>r.json())
+    .then(r => r.json())
 
-    .then(res=>{
+    .then(res => {
 
-        if(res.success){
+        let table = "";
+        let options = "";
 
-            alert("Class Added");
+        res.classes.forEach(c => {
 
-            loadClasses();
-
-        }
-
-        else{
-
-            alert(res.message);
-
-        }
-
-    });
-
-}
-
-function loadClasses(){
-
-    fetch(API_URL,{
-        method:"POST",
-        body:JSON.stringify({
-
-            action:"getClasses"
-
-        })
-    })
-
-    .then(r=>r.json())
-
-    .then(res=>{
-
-        let html="";
-
-        res.classes.forEach(c=>{
-
-            html+=`
+            table += `
 
             <tr>
 
@@ -122,44 +92,209 @@ function loadClasses(){
 
             `;
 
+            options += `
+
+                <option value="${c.classId}">
+
+                    ${c.className}
+
+                </option>
+
+            `;
+
         });
 
-        document.getElementById("classTable").innerHTML=html;
+        document.getElementById("classTable").innerHTML = table;
+
+        document.getElementById("sessionClass").innerHTML = options;
 
     });
 
 }
 
-function deleteClass(id){
+/*************************************************
+ ADD CLASS
+*************************************************/
 
-    if(!confirm("Delete this class?"))
-        return;
+function addClass() {
 
-    fetch(API_URL,{
-        method:"POST",
-        body:JSON.stringify({
+    fetch(API_URL, {
 
-            action:"deleteClass",
+        method: "POST",
 
-            pin:PIN,
-            secret:SECRET,
+        body: JSON.stringify({
 
-            classId:id
+            action: "addClass",
+
+            pin: PIN,
+            secret: SECRET,
+
+            className: document.getElementById("className").value,
+
+            branch: document.getElementById("branch").value,
+
+            semester: document.getElementById("semester").value
 
         })
+
     })
 
-    .then(r=>r.json())
+    .then(r => r.json())
 
-    .then(res=>{
+    .then(res => {
 
-        if(res.success){
+        if (res.success) {
+
+            alert("Class Added Successfully");
+
+            document.getElementById("className").value = "";
+            document.getElementById("branch").value = "";
+            document.getElementById("semester").value = "";
 
             loadClasses();
 
+        } else {
+
+            alert(res.message);
+
         }
 
-        else{
+    });
+
+}
+
+/*************************************************
+ DELETE CLASS
+*************************************************/
+
+function deleteClass(id) {
+
+    if (!confirm("Delete this class?"))
+        return;
+
+    fetch(API_URL, {
+
+        method: "POST",
+
+        body: JSON.stringify({
+
+            action: "deleteClass",
+
+            pin: PIN,
+            secret: SECRET,
+
+            classId: id
+
+        })
+
+    })
+
+    .then(r => r.json())
+
+    .then(res => {
+
+        if (res.success) {
+
+            loadClasses();
+
+        } else {
+
+            alert(res.message);
+
+        }
+
+    });
+
+}
+
+/*************************************************
+ START ATTENDANCE
+*************************************************/
+
+function startAttendance() {
+
+    currentClassId =
+        document.getElementById("sessionClass").value;
+
+    fetch(API_URL, {
+
+        method: "POST",
+
+        body: JSON.stringify({
+
+            action: "startSession",
+
+            classId: currentClassId,
+
+            subject:
+            document.getElementById("subject").value
+
+        })
+
+    })
+
+    .then(r => r.json())
+
+    .then(res => {
+
+        if (res.success) {
+
+            document.getElementById("attendanceCode").innerHTML =
+                res.code;
+
+            document.getElementById("attendanceStatus").innerHTML =
+                "ACTIVE";
+
+        }
+
+        else {
+
+            alert(res.message);
+
+        }
+
+    });
+
+}
+
+/*************************************************
+ STOP ATTENDANCE
+*************************************************/
+
+function stopAttendance() {
+
+    currentClassId =
+        document.getElementById("sessionClass").value;
+
+    fetch(API_URL, {
+
+        method: "POST",
+
+        body: JSON.stringify({
+
+            action: "stopSession",
+
+            classId: currentClassId
+
+        })
+
+    })
+
+    .then(r => r.json())
+
+    .then(res => {
+
+        if (res.success) {
+
+            document.getElementById("attendanceCode").innerHTML =
+                "------";
+
+            document.getElementById("attendanceStatus").innerHTML =
+                "STOPPED";
+
+        }
+
+        else {
 
             alert(res.message);
 
