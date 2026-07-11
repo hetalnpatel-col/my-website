@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Student Attendance</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>AEC Attendance System</h1>
+
+<h2>Student Attendance</h2>
+
+<label>Select Class</label>
+
+<select id="classSelect">
+
+</select>
+
+<br><br>
+
+<label>Enrollment Number</label>
+
+<input
+type="text"
+id="enrollment"
+placeholder="Enter Enrollment Number">
+
+<label>Attendance Code</label>
+
+<input
+type="text"
+id="attendanceCode"
+placeholder="6-digit Attendance Code">
+
+<button onclick="markAttendance()">
+
+Mark Attendance
+
+</button>
+
+<br><br>
+
+<div id="studentInfo">
+
+</div>
+
+<div id="message">
+
+</div>
+
+</div>
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/student.js"></script>
+
+</body>
+
+</html>
