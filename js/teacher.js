@@ -275,12 +275,14 @@ function stopAttendance() {
 
         body: JSON.stringify({
 
-            action: "stopSession",
+    action: "stopSession",
 
-            classId: currentClassId
+    pin: PIN,
+    secret: SECRET,
 
-        })
+    classId: currentClassId
 
+})
     })
 
     .then(r => r.json())
