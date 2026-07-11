@@ -64,8 +64,9 @@ function loadClasses() {
     .then(res => {
 
         let table = "";
-        let options = "";
+        let options = "<option value=''>Select Class</option>";
 
+        console.log(res);
         res.classes.forEach(c => {
 
             table += `
