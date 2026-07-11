@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>AEC Attendance System - Teacher</title>
+<title>AEC Attendance System</title>
 
 <link rel="stylesheet" href="css/style.css">
 
@@ -16,6 +16,8 @@
 
 <div class="container">
 
+    <!-- LOGIN -->
+
     <div class="card" id="loginBox">
 
         <h1>AEC Attendance System</h1>
@@ -23,20 +25,24 @@
         <h3>Teacher Login</h3>
 
         <input
-            id="pin"
             type="password"
+            id="pin"
             placeholder="Teacher PIN">
 
         <input
-            id="secret"
             type="password"
+            id="secret"
             placeholder="Secret Key">
 
         <button onclick="login()">
+
             Login
+
         </button>
 
     </div>
+
+    <!-- DASHBOARD -->
 
     <div
         class="card"
@@ -44,6 +50,8 @@
         style="display:none;">
 
         <h2>Teacher Dashboard</h2>
+
+        <hr>
 
         <h3>Add Class</h3>
 
@@ -60,12 +68,66 @@
             placeholder="Semester">
 
         <button onclick="addClass()">
+
             Add Class
+
+        </button>
+
+        <hr>
+
+        <h3>Attendance Session</h3>
+
+        <label>Select Class</label>
+
+        <select id="sessionClass">
+
+        </select>
+
+        <br><br>
+
+        <label>Subject</label>
+
+        <input
+            id="subject"
+            placeholder="Enter Subject">
+
+        <button onclick="startAttendance()">
+
+            Start Attendance
+
+        </button>
+
+        <button onclick="stopAttendance()">
+
+            Stop Attendance
+
         </button>
 
         <br><br>
 
-        <table border="1" width="100%">
+        <div id="attendancePanel">
+
+            <h2>Attendance Code</h2>
+
+            <h1 id="attendanceCode">
+
+                -----
+
+            </h1>
+
+            <h3 id="attendanceStatus">
+
+                No Active Session
+
+            </h3>
+
+        </div>
+
+        <hr>
+
+        <h3>Available Classes</h3>
+
+        <table>
 
             <thead>
 
@@ -80,7 +142,9 @@
 
             </thead>
 
-            <tbody id="classTable"></tbody>
+            <tbody id="classTable">
+
+            </tbody>
 
         </table>
 
