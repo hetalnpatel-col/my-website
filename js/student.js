@@ -24,24 +24,32 @@ function loadClasses() {
     .then(r => r.json())
     .then(res => {
 
+        console.log("Classes:", res);
+
         let options = "<option value=''>Select Class</option>";
 
-        res.classes.forEach(c => {
+        if (res.success && res.classes) {
 
-            options += `
-                <option value="${c.classId}">
+            res.classes.forEach(c => {
+
+                options += `<option value="${c.classId}">
                     ${c.className}
-                </option>
-            `;
+                </option>`;
 
-        });
+            });
+
+        }
 
         document.getElementById("classSelect").innerHTML = options;
+
+    })
+    .catch(err => {
+
+        console.error(err);
 
     });
 
 }
-
 /*************************************************
  Mark Attendance
 *************************************************/
