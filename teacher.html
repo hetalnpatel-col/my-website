@@ -107,22 +107,42 @@
 
         <div id="attendancePanel">
 
-            <h2>Attendance Code</h2>
+    <h2>Attendance Code</h2>
 
-            <h1 id="attendanceCode">
+    <h1 id="attendanceCode">-----</h1>
 
-                -----
+    <h3 id="attendanceStatus">
+        No Active Session
+    </h3>
 
-            </h1>
+    <hr>
 
-            <h3 id="attendanceStatus">
+    <h3>
+        Present Students :
+        <span id="presentCount">0</span>
+    </h3>
 
-                No Active Session
+    <table>
 
-            </h3>
+        <thead>
 
-        </div>
+            <tr>
 
+                <th>Enrollment</th>
+                <th>Name</th>
+                <th>Time</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="attendanceTable">
+
+        </tbody>
+
+    </table>
+
+</div>
         <hr>
 
         <h3>Available Classes</h3>
