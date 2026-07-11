@@ -247,7 +247,7 @@ function startAttendance() {
 
             document.getElementById("attendanceStatus").innerHTML =
                 "ACTIVE";
-
+       startLiveDashboard();
         }
 
         else {
@@ -296,14 +296,88 @@ function stopAttendance() {
 
             document.getElementById("attendanceStatus").innerHTML =
                 "STOPPED";
+               clearInterval(dashboardTimer);
 
-        }
+            document.getElementById("presentCount").innerHTML = "0";
 
-        else {
+            document.getElementById("attendanceTable").innerHTML = "";
+                   }
+
+            else {
 
             alert(res.message);
 
         }
+
+    });
+
+}
+let dashboardTimer = null;
+
+function startLiveDashboard() {
+
+    loadAttendanceStatus();
+
+    if (dashboardTimer)
+        clearInterval(dashboardTimer);
+
+    dashboardTimer = setInterval(loadAttendanceStatus, 5000);
+
+}
+
+function loadAttendanceStatus() {
+
+    const classId =
+        document.getElementById("sessionClass").value;
+
+    fetch(API_URL, {
+
+        method: "POST",
+
+        body: JSON.stringify({
+
+            action: "getAttendanceStatus",
+
+            classId: classId
+
+        })
+
+    })
+
+    .then(r => r.json())
+
+    .then(res => {
+
+        if (!res.active)
+            return;
+
+        document.getElementById("attendanceCode").innerHTML =
+            res.code;
+
+        document.getElementById("presentCount").innerHTML =
+            res.present;
+
+        let html = "";
+
+        res.students.forEach(s => {
+
+            html += `
+
+            <tr>
+
+                <td>${s.enrollment}</td>
+
+                <td>${s.name}</td>
+
+                <td>${new Date(s.time).toLocaleTimeString()}</td>
+
+            </tr>
+
+            `;
+
+        });
+
+        document.getElementById("attendanceTable").innerHTML = html;
 
     });
 
