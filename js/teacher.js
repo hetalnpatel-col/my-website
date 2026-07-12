@@ -33,7 +33,7 @@ function login() {
             document.getElementById("dashboard").style.display = "block";
 
             loadClasses();
-
+            setInterval(refreshCurrentSession,1000);
         } else {
 
             alert(res.message);
