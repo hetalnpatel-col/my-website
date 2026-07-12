@@ -44,10 +44,135 @@
 
     <!-- DASHBOARD -->
 
-    <div
-        class="card"
-        id="dashboard"
-        style="display:none;">
+    <div class="card" id="dashboard" style="display:none;">
+
+<h2>👨‍🏫 Teacher Dashboard</h2>
+
+<div class="dashboardTop">
+
+<div class="statCard">
+<h3>📅 Today</h3>
+<p id="todayDate"></p>
+</div>
+
+<div class="statCard">
+<h3>🕒 Time</h3>
+<p id="liveClock"></p>
+</div>
+
+<div class="statCard">
+<h3>👨‍🎓 Present</h3>
+<p><span id="presentCount">0</span></p>
+</div>
+
+</div>
+
+<hr>
+
+<h2>📚 Attendance Session</h2>
+
+<label>Select Class</label>
+
+<select id="sessionClass"></select>
+
+<label>Subject</label>
+
+<input
+id="subject"
+placeholder="Signals and Systems">
+
+<div class="buttonRow">
+
+<button onclick="startAttendance()">
+▶ Start Attendance
+</button>
+
+<button onclick="stopAttendance()">
+■ Stop Attendance
+</button>
+
+</div>
+
+<div id="attendancePanel">
+
+<h3>Attendance Code</h3>
+
+<h1 id="attendanceCode">------</h1>
+
+<h2 id="countdown">
+⏳ 20 sec
+</h2>
+
+<h3 id="attendanceStatus">
+
+No Active Session
+
+</h3>
+
+</div>
+
+<hr>
+
+<h2>✅ Live Attendance</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Enrollment</th>
+<th>Name</th>
+<th>Time</th>
+
+</tr>
+
+</thead>
+
+<tbody id="attendanceTable">
+
+</tbody>
+
+</table>
+
+<hr>
+
+<h2>🏫 Manage Classes</h2>
+
+<input id="className" placeholder="Class Name">
+
+<input id="branch" placeholder="Branch">
+
+<input id="semester" placeholder="Semester">
+
+<button onclick="addClass()">
+
+➕ Add Class
+
+</button>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Class</th>
+<th>Branch</th>
+<th>Semester</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="classTable">
+
+</tbody>
+
+</table>
+
+</div>
 
         <h2>Teacher Dashboard</h2>
 
