@@ -382,3 +382,31 @@ function loadAttendanceStatus() {
     });
 
 }
+function refreshCurrentSession() {
+
+    const classId = document.getElementById("sessionClass").value;
+
+    if (!classId) return;
+
+    fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+            action: "getCurrentSession",
+            classId: classId
+        })
+    })
+    .then(r => r.json())
+    .then(res => {
+
+        if (!res.active) {
+            document.getElementById("attendanceCode").innerHTML = "------";
+            document.getElementById("attendanceStatus").innerHTML = "NO ACTIVE SESSION";
+            return;
+        }
+
+        document.getElementById("attendanceCode").innerHTML = res.code;
+        document.getElementById("attendanceStatus").innerHTML = "ACTIVE";
+
+    });
+
+}
