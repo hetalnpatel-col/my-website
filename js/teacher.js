@@ -216,7 +216,10 @@ function startAttendance() {
 
     currentClassId =
         document.getElementById("sessionClass").value;
-
+   localStorage.setItem(
+        "selectedClass",
+    document.getElementById("sessionClass").value
+    );
     fetch(API_URL, {
 
         method: "POST",
