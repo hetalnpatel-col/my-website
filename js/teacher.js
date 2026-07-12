@@ -410,3 +410,18 @@ function refreshCurrentSession() {
     });
 
 }
+function updateClock(){
+
+const now=new Date();
+
+document.getElementById("liveClock").innerHTML=
+now.toLocaleTimeString();
+
+document.getElementById("todayDate").innerHTML=
+now.toDateString();
+
+}
+
+setInterval(updateClock,1000);
+
+updateClock();
