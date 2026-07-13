@@ -285,3 +285,10 @@ margin-top:15px;
 font-weight:bold;
 
 }
+.footer{
+    margin-top:30px;
+    text-align:center;
+    color:#777;
+    font-size:13px;
+    padding:15px;
+}
