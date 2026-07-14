@@ -292,14 +292,11 @@ font-weight:bold;
     font-size:13px;
     padding:15px;
 }
-.code-box{
-    background:#0d6efd;
-    color:white;
-    text-align:center;
-    padding:20px;
-    border-radius:12px;
-    margin:15px 0;
-    box-shadow:0 4px 12px rgba(0,0,0,.2);
+.code-box span{
+    font-size:clamp(28px,8vw,52px);
+    letter-spacing:4px;
+    font-family:Consolas,monospace;
+    word-break:break-all;
 }
 
 .code-box span{
