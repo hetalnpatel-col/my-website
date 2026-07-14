@@ -14,100 +14,134 @@
 
 <body>
 
+<div class="topbar">
+
+<h1>AEC Attendance System</h1>
+
+<p>
+A.D. Patel Institute of Technology
+</p>
+
+</div>
+
 <div class="container">
 
-    <!-- LOGIN -->
+<!-- LOGIN -->
 
-    <div class="card" id="loginBox">
+<div class="card" id="loginBox">
 
-        <h1>AEC Attendance System</h1>
+<h2>Teacher Login</h2>
 
-        <h3>Teacher Login</h3>
+<input
+type="password"
+id="pin"
+placeholder="Teacher PIN">
 
-        <input
-            type="password"
-            id="pin"
-            placeholder="Teacher PIN">
+<input
+type="password"
+id="secret"
+placeholder="Secret Key">
 
-        <input
-            type="password"
-            id="secret"
-            placeholder="Secret Key">
+<button onclick="login()">
 
-        <button onclick="login()">
+Login
 
-            Login
+</button>
 
-        </button>
+</div>
 
-    </div>
+<!-- DASHBOARD -->
 
-    <!-- DASHBOARD -->
+<div
+class="card"
+id="dashboard"
+style="display:none;">
 
-    <div class="card" id="dashboard" style="display:none;">
-
-<h2>👨‍🏫 Teacher Dashboard</h2>
+<h2>Teacher Dashboard</h2>
 
 <div class="dashboardTop">
 
 <div class="statCard">
-<h3>📅 Today</h3>
+
+<h3>Date</h3>
+
 <p id="todayDate"></p>
+
 </div>
 
 <div class="statCard">
-<h3>🕒 Time</h3>
+
+<h3>Time</h3>
+
 <p id="liveClock"></p>
+
 </div>
 
 <div class="statCard">
-<h3>👨‍🎓 Present</h3>
-<p><span id="presentCount">0</span></p>
+
+<h3>Present</h3>
+
+<p id="presentCount">0</p>
+
 </div>
 
 </div>
 
 <hr>
 
-<h2>📚 Attendance Session</h2>
+<h2>Attendance Session</h2>
 
 <label>Select Class</label>
 
-<select id="sessionClass"></select>
+<select id="sessionClass">
+
+</select>
 
 <label>Subject</label>
 
 <input
 id="subject"
-placeholder="Signals and Systems">
+placeholder="Enter Subject">
 
 <div class="buttonRow">
 
 <button onclick="startAttendance()">
+
 ▶ Start Attendance
+
 </button>
 
 <button onclick="stopAttendance()">
+
 ■ Stop Attendance
+
 </button>
 
 </div>
 
-<div id="attendancePanel">
+<div class="attendanceCard">
 
 <h3>Attendance Code</h3>
 
 <div class="code-box">
-    <span id="attendanceCode">------</span>
+
+<span id="attendanceCode">
+
+------
+
+</span>
+
 </div>
 
 <h2 id="countdown">
-⏳ 20 sec
+
+⏳ 02:00
+
 </h2>
 
 <h3 id="attendanceStatus">
 
-No Active Session
+NO ACTIVE SESSION
 
 </h3>
 
@@ -115,7 +149,7 @@ No Active Session
 
 <hr>
 
-<h2>✅ Live Attendance</h2>
+<h2>Live Attendance</h2>
 
 <table>
 
@@ -132,7 +166,6 @@ No Active Session
 </thead>
 
 <tbody id="attendanceTable">
-
 </tbody>
 
 </table>
@@ -141,17 +174,25 @@ No Active Session
 
 <h2>🏫 Manage Classes</h2>
 
-<input id="className" placeholder="Class Name">
+<input
+id="className"
+placeholder="Class Name">
 
-<input id="branch" placeholder="Branch">
+<input
+id="branch"
+placeholder="Branch">
 
-<input id="semester" placeholder="Semester">
+<input
+id="semester"
+placeholder="Semester">
 
 <button onclick="addClass()">
 
 ➕ Add Class
 
 </button>
+
+<br><br>
 
 <table>
 
@@ -176,128 +217,19 @@ No Active Session
 
 </div>
 
-        <h2>Teacher Dashboard</h2>
-
-        <hr>
-
-        <h3>Add Class</h3>
-
-        <input
-            id="className"
-            placeholder="Class Name">
-
-        <input
-            id="branch"
-            placeholder="Branch">
-
-        <input
-            id="semester"
-            placeholder="Semester">
-
-        <button onclick="addClass()">
-
-            Add Class
-
-        </button>
-
-        <hr>
-
-        <h3>Attendance Session</h3>
-
-        <label>Select Class</label>
-
-        <select id="sessionClass">
-
-        </select>
-
-        <br><br>
-
-        <label>Subject</label>
-
-        <input
-            id="subject"
-            placeholder="Enter Subject">
-
-        <button onclick="startAttendance()">
-
-            Start Attendance
-
-        </button>
-
-        <button onclick="stopAttendance()">
-
-            Stop Attendance
-
-        </button>
-
-        <br><br>
-
-        <div id="attendancePanel">
-
-    <h2>Attendance Code</h2>
-
-    <h1 id="attendanceCode">-----</h1>
-
-    <h3 id="attendanceStatus">
-        No Active Session
-    </h3>
-
-    <hr>
-
-    <h3>
-        Present Students :
-        <span id="presentCount">0</span>
-    </h3>
-
-    <table>
-
-        <thead>
-
-            <tr>
-
-                <th>Enrollment</th>
-                <th>Name</th>
-                <th>Time</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody id="attendanceTable">
-
-        </tbody>
-
-    </table>
-
 </div>
-        <hr>
 
-        <h3>Available Classes</h3>
+<footer class="footer">
 
-        <table>
+AEC Attendance System V3.0
 
-            <thead>
+<br>
 
-                <tr>
+© 2026
 
-                    <th>Class</th>
-                    <th>Branch</th>
-                    <th>Semester</th>
-                    <th>Action</th>
+A.D. Patel Institute of Technology
 
-                </tr>
-
-            </thead>
-
-            <tbody id="classTable">
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</div>
+</footer>
 
 <script src="js/config.js"></script>
 <script src="js/teacher.js"></script>
@@ -305,17 +237,33 @@ No Active Session
 </body>
 
 </html>
-<div class="topbar">
 
-<h1>AEC Attendance System</h1>
 
-<p>
-A.D. Patel Institute of Technology
-</p>
 
-</div>
-<footer class="footer">
-    AEC Attendance System V2.2 Stable
-    <br>
-    © 2026 A.D. Patel Institute of Technology
-</footer>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
