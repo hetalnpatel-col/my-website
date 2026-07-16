@@ -20,33 +20,22 @@ if (!deviceId) {
 }
 let selectedClassId = "";
 
-/*************************************************
- Load Classes
-*************************************************/
-
-window.onload = function () {
-    loadClasses();
-};
-
 function loadClasses() {
 
     fetch(API_URL, {
+
         method: "POST",
-        body:JSON.stringify({
 
-      action:"markAttendance",
+        body: JSON.stringify({
 
-      classId:classId,
+            action: "getClasses"
 
-     enrollment:enrollment,
+        })
 
-     code:code,
-
-     deviceId:deviceId
-
-})
     })
+
     .then(r => r.json())
+
     .then(res => {
 
         console.log("Classes:", res);
@@ -57,20 +46,17 @@ function loadClasses() {
 
             res.classes.forEach(c => {
 
-                options += `<option value="${c.classId}">
+                options += `
+                <option value="${c.classId}">
                     ${c.className}
-                </option>`;
+                </option>
+                `;
 
             });
 
         }
 
         document.getElementById("classSelect").innerHTML = options;
-
-    })
-    .catch(err => {
-
-        console.error(err);
 
     });
 
@@ -118,6 +104,7 @@ function markAttendance() {
             enrollment: enrollment,
 
             code: code
+            deviceId: deviceId
 
         })
 
