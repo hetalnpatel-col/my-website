@@ -2,7 +2,22 @@
  AEC Attendance System
  Student Portal
 *************************************************/
+let deviceId = localStorage.getItem("AEC_DEVICE_ID");
 
+if (!deviceId) {
+
+    deviceId =
+        "DEV-" +
+        Date.now() +
+        "-" +
+        Math.floor(Math.random()*100000);
+
+    localStorage.setItem(
+        "AEC_DEVICE_ID",
+        deviceId
+    );
+
+}
 let selectedClassId = "";
 
 /*************************************************
@@ -17,9 +32,19 @@ function loadClasses() {
 
     fetch(API_URL, {
         method: "POST",
-        body: JSON.stringify({
-            action: "getClasses"
-        })
+        body:JSON.stringify({
+
+      action:"markAttendance",
+
+      classId:classId,
+
+     enrollment:enrollment,
+
+     code:code,
+
+     deviceId:deviceId
+
+})
     })
     .then(r => r.json())
     .then(res => {
