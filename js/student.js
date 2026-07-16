@@ -41,7 +41,8 @@ function loadClasses() {
 
     .then(res => {
 
-        console.log("Classes:", res);
+      console.log(res);
+      alert(JSON.stringify(res));
 
         let options = "<option value=''>Select Class</option>";
 
