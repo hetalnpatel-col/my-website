@@ -19,6 +19,9 @@ if (!deviceId) {
 
 }
 let selectedClassId = "";
+window.onload = function () {
+    loadClasses();
+};
 
 function loadClasses() {
 
