@@ -72,13 +72,15 @@ function loadReport() {
 
     }
 
+    if (!PIN) {
     PIN = prompt("Enter Teacher PIN");
-
     if (PIN == null) return;
+}
 
+if (!SECRET) {
     SECRET = prompt("Enter Secret Key");
-
     if (SECRET == null) return;
+}
 
     fetch(API_URL, {
 
