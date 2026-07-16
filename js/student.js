@@ -103,7 +103,7 @@ function markAttendance() {
 
             enrollment: enrollment,
 
-            code: code
+            code: code,
             deviceId: deviceId
 
         })
